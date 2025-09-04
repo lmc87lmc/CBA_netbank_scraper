@@ -4,7 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import os
 
-# --- Configuration ---
+# - config
 NB_client_number = "INSERT_CLIENT_NUMBER_HERE" # good practice to use a .env to store this sensitive information
 NB_password = "INSERT_PASSWORD_HERE" # good practice to use a .env to store this sensitive information
 TRANSACTIONS_FILE = "known_transactions.txt"
@@ -12,7 +12,6 @@ REFRESH_INTERVAL_SECONDS = 30  # Wait 30 seconds between checks
 
 
 def load_known_transactions(filename):
-    """Loads receipt numbers from a file into a set for fast lookups."""
     if not os.path.exists(filename):
         return set()
     with open(filename, 'r') as f:
@@ -20,16 +19,11 @@ def load_known_transactions(filename):
 
 
 def save_new_transaction(filename, receipt_number):
-    """Appends a new receipt number to the file."""
     with open(filename, 'a') as f:
         f.write(receipt_number + '\n')
 
 
 def scrape_page_for_new_transactions(sb, known_receipts):
-    """
-    Scrapes the currently visible page for transactions, processes new ones,
-    and returns a list of newly found transaction data.
-    """
     newly_found_transactions = []
 
     sb.wait_for_element_visible("tr.transaction-item")
@@ -62,7 +56,6 @@ def scrape_page_for_new_transactions(sb, known_receipts):
             transaction_title = sb.get_text("h1#transaction-details-modal-heading")
             amount = sb.get_text("span.transaction-details-content__amount span[aria-hidden='true']")
 
-            # --- NEW: Check for both Description and Reference ---
             description = "N/A"
             reference = "N/A"
 
